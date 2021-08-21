@@ -1,42 +1,50 @@
 import axios from "axios";
 
-const API_key = "d4312c9afc1972cc1249c5b0fe157ecd";
-axios.defaults.baseURL = "https://api.themoviedb.org/3";
+const API_KEY = "d4312c9afc1972cc1249c5b0fe157ecd";
+const BASE_URL = "https://api.themoviedb.org/3";
 
-async function getTrendingFilms() {
-  const resp = await axios({
-    method: "GET",
-    url: `/trending/movie/week?api_key=${API_key}`,
-  });
-  return resp;
-}
+axios.defaults.baseURL = BASE_URL;
+axios.defaults.params = {
+  api_key: API_KEY,
+};
 
-function getFilmById(id) {
-  return axios({
-    method: "GET",
-    url: `/movie/${id}?api_key=${API_key}`,
-  });
-}
+const fetchTrendingMovies = () => {
+  return axios.get(`/movie/popular`).catch((error) => error);
+};
 
-function getFilmsByQuery(query) {
-  return axios({
-    method: "GET",
-    url: `/search/movie?api_key=${API_key}=` + query,
-  });
-}
+const fetchSearchMovies = ({ searchQuery = "" }) => {
+  return axios
+    .get(`/search/movie?query=${searchQuery}`)
+    .then(({ data }) => data)
+    .catch((error) => error);
+};
 
-function getCastInfo(id) {
-  return axios.get(`/movie/${id}/credits?api_key=${API_key}`);
-}
+const fetchMovieDetails = (movieId) => {
+  return axios
+    .get(`/movie/${movieId}`)
+    .then(({ data }) => data)
+    .catch((error) => error);
+};
 
-function getReviewsInfo(id) {
-  return axios.get(`/movie/${id}/reviews?api_key=${API_key}`);
-}
+const fetchMovieReviews = (movieId) => {
+  return axios
+    .get(`/movie/${movieId}/reviews`)
+    .then(({ data }) => data)
+    .catch((error) => error);
+};
 
-export {
-  getTrendingFilms,
-  getFilmById,
-  getFilmsByQuery,
-  getCastInfo,
-  getReviewsInfo,
+const fetchMovieCast = (movieId) => {
+  return axios
+    .get(`/movie/${movieId}/credits`)
+    .then(({ data }) => data)
+    .catch((error) => error);
+};
+
+// eslint-disable-next-line import/no-anonymous-default-export
+export default {
+  fetchTrendingMovies,
+  fetchSearchMovies,
+  fetchMovieDetails,
+  fetchMovieReviews,
+  fetchMovieCast,
 };
